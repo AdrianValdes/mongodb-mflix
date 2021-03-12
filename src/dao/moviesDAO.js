@@ -287,18 +287,6 @@ export default class MoviesDAO {
    */
   static async getMovieByID(id) {
     try {
-      /**
-      Ticket: Get Comments
-
-      Given a movie ID, build an Aggregation Pipeline to retrieve the comments
-      matching that movie's ID.
-
-      The $match stage is already completed. You will need to add a $lookup
-      stage that searches the `comments` collection for the correct comments.
-      */
-
-      // TODO Ticket: Get Comments
-      // Implement the required pipeline.
       const pipeline = [
         {
           $match: {
@@ -329,15 +317,12 @@ export default class MoviesDAO {
       ]
       return await movies.aggregate(pipeline).next()
     } catch (e) {
-      /**
-      Ticket: Error Handling
-
-      Handle the error that occurs when an invalid ID is passed to this method.
-      When this specific error is thrown, the method should return `null`.
-      */
-
-      // TODO Ticket: Error Handling
-      // Catch the InvalidId error by string matching, and then handle it.
+      if (
+        String.toString(e).startsWith(
+          "Error: Argument passed in must be a single String of 12 bytes or a string of 24 hex characters",
+        )
+      )
+        return null
       console.error(`Something went wrong in getMovieByID, ${e}`)
       return null
     }
