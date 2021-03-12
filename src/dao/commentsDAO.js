@@ -50,7 +50,7 @@ export default class CommentsDAO {
         email: user.email,
         movie_id: ObjectId(movieId),
         text: comment,
-        date: date,
+        date,
       }
 
       return await comments.insertOne(commentDoc)
@@ -102,6 +102,7 @@ export default class CommentsDAO {
       // Use the userEmail and commentId to delete the proper comment.
       const deleteResponse = await comments.deleteOne({
         _id: ObjectId(commentId),
+        email: userEmail,
       })
 
       return deleteResponse
