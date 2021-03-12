@@ -305,6 +305,27 @@ export default class MoviesDAO {
             _id: ObjectId(id),
           },
         },
+        {
+          $lookup: {
+            from: "comments",
+            let: { id: "$_id" },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ["$movie_id", "$$id"],
+                  },
+                },
+              },
+              {
+                $sort: {
+                  date: -1,
+                },
+              },
+            ],
+            as: "comments",
+          },
+        },
       ]
       return await movies.aggregate(pipeline).next()
     } catch (e) {
@@ -317,8 +338,8 @@ export default class MoviesDAO {
 
       // TODO Ticket: Error Handling
       // Catch the InvalidId error by string matching, and then handle it.
-      console.error(`Something went wrong in getMovieByID: ${e}`)
-      throw e
+      console.error(`Something went wrong in getMovieByID, ${e}`)
+      return null
     }
   }
 }
